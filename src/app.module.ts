@@ -1,9 +1,23 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module } from '@nestjs/common'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { UserModule } from './user/user.module'
+import { ConfigModule } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { EmployeesModule } from './employees/employees.module';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot(), // Read environment variables from .env file 
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      autoLoadEntities: true,
+      synchronize: true
+    }),
+    UserModule,
+    EmployeesModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
