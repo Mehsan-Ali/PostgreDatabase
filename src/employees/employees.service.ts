@@ -41,4 +41,18 @@ export class EmployeesService {
     const deleted = await this.employeesRepository.delete(id)
     return { Message: `Employee with ID ${id} deleted successfully ${deleted.affected}` }
   }
+
+  async search(filters: {name?:string , department?:string}) : Promise<Employee[]> {
+    const query = this.employeesRepository.createQueryBuilder('employee')
+
+    if (filters.name) {
+      query.andWhere('employee.name ILIKE :name', { name: `%${filters.name}%` }) // ILIKE is used for case-insensitive search
+    }
+
+    if (filters.department) {
+      query.andWhere('employee.department ILIKE :department', { department: `%${filters.department}%` })
+    }
+
+    return query.getMany()
+  }
 }
